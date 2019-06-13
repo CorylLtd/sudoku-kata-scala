@@ -1,14 +1,21 @@
 case class Move(row: Int, col: Int, possibleValues: List[Int])
 
 case class Grid(numbers: List[Int]) {
-  val GRID_DIMENSION = 9
-  val SQUARE_SIZE: Int = Math.sqrt(GRID_DIMENSION).toInt
+  /**
+    * Overall size of Sudoku grid
+    */
+  val GRID_SIZE = 9
 
-  require(numbers.length == GRID_DIMENSION * GRID_DIMENSION,
-    s"Grid must be a $GRID_DIMENSION x $GRID_DIMENSION value, i.e. ${GRID_DIMENSION * GRID_DIMENSION} numbers")
+  /**
+    * Size of 'blocks'
+    */
+  val BLOCK_SIZE: Int = Math.sqrt(GRID_SIZE).toInt
+
+  require(numbers.length == GRID_SIZE * GRID_SIZE,
+    s"Grid must be a $GRID_SIZE x $GRID_SIZE value, i.e. ${GRID_SIZE * GRID_SIZE} numbers")
 
   override def toString: String =
-    numbers.sliding(GRID_DIMENSION, GRID_DIMENSION).mkString("\n")
+    numbers.sliding(GRID_SIZE, GRID_SIZE).mkString("\n")
 
   /**
     * Get all numbers on a row
@@ -16,7 +23,7 @@ case class Grid(numbers: List[Int]) {
     * @param rowNumber - index of the row (0-8)
     */
   def row(rowNumber: Int): List[Int] =
-    numbers.slice(rowNumber * GRID_DIMENSION, (rowNumber + 1) * GRID_DIMENSION)
+    numbers.slice(rowNumber * GRID_SIZE, (rowNumber + 1) * GRID_SIZE)
 
   /**
     * Get all numbers in column
@@ -24,7 +31,7 @@ case class Grid(numbers: List[Int]) {
     * @param colNumber - index of the column
     */
   def col(colNumber: Int): List[Int] =
-    numbers.drop(colNumber).sliding(1, GRID_DIMENSION).flatten.toList
+    numbers.drop(colNumber).sliding(1, GRID_SIZE).flatten.toList
 
   /**
     * Get all numbers in a square
@@ -33,10 +40,10 @@ case class Grid(numbers: List[Int]) {
     * @param col - index of the square col (0-SQUARE_SIZE)
     */
   def block(row: Int, col: Int): List[Int] =
-    numbers.drop(GRID_DIMENSION * SQUARE_SIZE * row + SQUARE_SIZE * col)
-      .sliding(SQUARE_SIZE, GRID_DIMENSION).take(SQUARE_SIZE).flatten.toList
+    numbers.drop(GRID_SIZE * BLOCK_SIZE * row + BLOCK_SIZE * col)
+      .sliding(BLOCK_SIZE, GRID_SIZE).take(BLOCK_SIZE).flatten.toList
 
-  private def offset(row: Int, col: Int): Int = (GRID_DIMENSION * row) + col
+  private def offset(row: Int, col: Int): Int = (GRID_SIZE * row) + col
 
   /**
     * Return a new grid with the given square set to the given value
@@ -69,10 +76,10 @@ case class Grid(numbers: List[Int]) {
     * @return - a move that includes all possible values
     */
   def potentialMove(row: Int, col: Int): Move =
-    Move(row, col, (1 to GRID_DIMENSION).toList
+    Move(row, col, (1 to GRID_SIZE).toList
       .diff(this.row(row))
       .diff(this.col(col))
-      .diff(block(row / SQUARE_SIZE, col / SQUARE_SIZE))
+      .diff(block(row / BLOCK_SIZE, col / BLOCK_SIZE))
     )
 
   /**
@@ -80,8 +87,8 @@ case class Grid(numbers: List[Int]) {
     */
   def potentialMoves(): Vector[Move] = {
     for {
-      row <- 0 until GRID_DIMENSION
-      col <- 0 until GRID_DIMENSION if getSquare(row, col) == 0
+      row <- 0 until GRID_SIZE
+      col <- 0 until GRID_SIZE if getSquare(row, col) == 0
     } yield potentialMove(row, col)
   }.sortBy(mv => mv.possibleValues.length)
     .filterNot(mv => mv.possibleValues.isEmpty)
