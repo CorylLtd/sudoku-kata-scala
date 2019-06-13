@@ -11,19 +11,17 @@ case class Grid(numbers: Vector[Int]) {
     numbers.sliding(GRID_DIMENSION, GRID_DIMENSION).mkString("\n")
 
   /**
-    * Get all GRID_DIMENSION numbers on a row
+    * Get all numbers on a row
     *
     * @param rowNumber - index of the row (0-8)
-    * @return - list of numbers
     */
   def row(rowNumber: Int): Vector[Int] =
     numbers.slice(rowNumber * GRID_DIMENSION, (rowNumber + 1) * GRID_DIMENSION)
 
   /**
-    * Get all GRID_DIMENSION numbers in column
+    * Get all numbers in column
     *
-    * @param colNumber - index of the column (0-8)
-    * @return - list of GRID_DIMENSION numbers
+    * @param colNumber - index of the column
     */
   def col(colNumber: Int): Vector[Int] = {
     def colBuilder(sourceNumbers: Vector[Int], acc: Vector[Int]): Vector[Int] = {
@@ -34,12 +32,11 @@ case class Grid(numbers: Vector[Int]) {
     colBuilder(numbers.drop(colNumber), Vector[Int]())
   }
 
-  /** 1
-    * Get all GRID_DIMENSION numbers in a square
+  /**
+    * Get all numbers in a square
     *
     * @param row - index of the square row (0-2)
     * @param col - index of the square col (0-SQUARE_SIZE)
-    * @return - list of GRID_DIMENSION numbers
     */
   def group(row: Int, col: Int): Vector[Int] = {
     def squareBuilder(sourceNumbers: Vector[Int], acc: Vector[Int]): Vector[Int] = {
@@ -52,14 +49,28 @@ case class Grid(numbers: Vector[Int]) {
 
   private def offset(row: Int, col: Int): Int = (GRID_DIMENSION * row) + col
 
+  /**
+    * Return a new grid with the given square set to the given value
+    * @param row - row of square to set
+    * @param col - col of square to set
+    * @param value - new value
+    */
   def setSquare(row: Int, col: Int, value: Int): Grid =
     Grid(numbers.updated(offset(row, col), value))
 
+  /**
+    * Get the value of the given square
+    * @param row - row of square
+    * @param col - col of square
+    * @return
+    */
   def getSquare(row: Int, col: Int): Int =
     numbers(offset(row, col))
 
-  def unassignedCount(): Int =
-    numbers.count(_ == 0)
+  /**
+    * Get the number of squares that have no value
+    */
+  def unassignedCount(): Int = numbers.count(_ == 0)
 
   /**
     * Get all the moves possible for the given cell
@@ -75,6 +86,9 @@ case class Grid(numbers: Vector[Int]) {
       .diff(group(row / SQUARE_SIZE, col / SQUARE_SIZE))
     )
 
+  /**
+    * Get all potential moves and their potential values for this grid
+    */
   def potentialMoves(): Vector[Move] = {
     for {
       row <- 0 until GRID_DIMENSION
