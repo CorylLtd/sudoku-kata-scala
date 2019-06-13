@@ -83,16 +83,16 @@ case class Grid(numbers: List[Int]) {
     )
 
   /**
-    * Get all potential moves and their potential values for this grid
+    * Get the next potential move and it's potential values for this grid
     */
-  def potentialMoves(): Vector[Move] = {
+  def nextPotentialMove: Option[Move] = {
     for {
       row <- 0 until GRID_SIZE
       col <- 0 until GRID_SIZE if getSquare(row, col) == 0
     } yield potentialMove(row, col)
-  }.sortBy(mv => mv.possibleValues.length)
-    .filterNot(mv => mv.possibleValues.isEmpty)
-    .toVector
+  } .filterNot(mv => mv.possibleValues.isEmpty)
+    .sortBy(mv => mv.possibleValues.length)
+    .headOption
 }
 
 object Grid {

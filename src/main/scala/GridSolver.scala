@@ -3,11 +3,11 @@ object GridSolver {
   def solve(grid: Grid): Grid = {
 
     def solveGrid(grid: Grid): Grid =
-      if (grid.isFull) grid else grid.potentialMoves() match {
-        case head +: _ =>
-          findSolution(head.possibleValues.map(
-            grid.setSquare(head.row, head.col, _)))
-        case _ => null
+      if (grid.isFull) grid else grid.nextPotentialMove match {
+        case Some(move)  =>
+          findSolution(move.possibleValues.map(
+            grid.setSquare(move.row, move.col, _)))
+        case None => null
       }
 
     def findSolution(grids: List[Grid]): Grid =
