@@ -23,14 +23,8 @@ case class Grid(numbers: List[Int]) {
     *
     * @param colNumber - index of the column
     */
-  def col(colNumber: Int): List[Int] = {
-    def colBuilder(sourceNumbers: List[Int], acc: List[Int]): List[Int] = {
-      if (acc.length == GRID_DIMENSION) acc else
-        colBuilder(sourceNumbers.drop(GRID_DIMENSION), acc :+ sourceNumbers.head)
-    }
-
-    colBuilder(numbers.drop(colNumber), List[Int]())
-  }
+  def col(colNumber: Int): List[Int] =
+    numbers.drop(colNumber).sliding(1, GRID_DIMENSION).flatten.toList
 
   /**
     * Get all numbers in a square
@@ -38,14 +32,9 @@ case class Grid(numbers: List[Int]) {
     * @param row - index of the square row (0-2)
     * @param col - index of the square col (0-SQUARE_SIZE)
     */
-  def group(row: Int, col: Int): List[Int] = {
-    def squareBuilder(sourceNumbers: List[Int], acc: List[Int]): List[Int] = {
-      if (acc.length == GRID_DIMENSION) acc else
-        squareBuilder(sourceNumbers.drop(GRID_DIMENSION), acc ++ sourceNumbers.take(SQUARE_SIZE))
-    }
-
-    squareBuilder(numbers.drop((GRID_DIMENSION * SQUARE_SIZE * row) + SQUARE_SIZE * col), List[Int]())
-  }
+  def block(row: Int, col: Int): List[Int] =
+    numbers.drop(GRID_DIMENSION * SQUARE_SIZE * row + SQUARE_SIZE * col)
+      .sliding(SQUARE_SIZE, GRID_DIMENSION).take(SQUARE_SIZE).flatten.toList
 
   private def offset(row: Int, col: Int): Int = (GRID_DIMENSION * row) + col
 
@@ -83,7 +72,7 @@ case class Grid(numbers: List[Int]) {
     Move(row, col, (1 to GRID_DIMENSION).toList
       .diff(this.row(row))
       .diff(this.col(col))
-      .diff(group(row / SQUARE_SIZE, col / SQUARE_SIZE))
+      .diff(block(row / SQUARE_SIZE, col / SQUARE_SIZE))
     )
 
   /**
