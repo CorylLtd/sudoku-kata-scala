@@ -49,9 +49,10 @@ class GridSolverTests extends FunSuite {
     0, 0, 0, 0, 3, 0, 1, 0, 2,
     9, 0, 0, 0, 0, 0, 0, 5, 0
   )
+
   private def assertSolved(solution: Grid) = {
     assert(solution != null, "Solution must be found")
-    assert(solution.unassignedCount() === 0, "Solution must have no unassigned squares")
+    assert(solution.isFull, "Solution must have no unassigned squares")
   }
 
   test("Should be able to solve 'easy' puzzle") {

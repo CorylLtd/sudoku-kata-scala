@@ -70,7 +70,7 @@ case class Grid(numbers: Vector[Int]) {
   /**
     * Get the number of squares that have no value
     */
-  def unassignedCount(): Int = numbers.count(_ == 0)
+  def isFull: Boolean = numbers.count(_ == 0) == 0
 
   /**
     * Get all the moves possible for the given cell
