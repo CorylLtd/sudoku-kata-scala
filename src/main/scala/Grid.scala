@@ -14,8 +14,16 @@ case class Grid(numbers: List[Int]) {
   require(numbers.length == GRID_SIZE * GRID_SIZE,
     s"Grid must be a $GRID_SIZE x $GRID_SIZE value, i.e. ${GRID_SIZE * GRID_SIZE} numbers")
 
+  /**
+    * Display grid as Sudoku puzzle is usually represented
+    * @return
+    */
   override def toString: String =
-    numbers.sliding(GRID_SIZE, GRID_SIZE).mkString("\n")
+    numbers.sliding(GRID_SIZE, GRID_SIZE)
+      .map(l => l.sliding(BLOCK_SIZE, BLOCK_SIZE).map(bl => bl.mkString(" ")).mkString(" | "))
+      .sliding(BLOCK_SIZE, BLOCK_SIZE)
+      .map(bl => bl.mkString("\n")).mkString(s"\n${"-" * ((GRID_SIZE * 2) + BLOCK_SIZE)}\n")
+
 
   /**
     * Get all numbers on a row
@@ -47,8 +55,9 @@ case class Grid(numbers: List[Int]) {
 
   /**
     * Return a new grid with the given square set to the given value
-    * @param row - row of square to set
-    * @param col - col of square to set
+    *
+    * @param row   - row of square to set
+    * @param col   - col of square to set
     * @param value - new value
     */
   def setSquare(row: Int, col: Int, value: Int): Grid =
@@ -56,6 +65,7 @@ case class Grid(numbers: List[Int]) {
 
   /**
     * Get the value of the given square
+    *
     * @param row - row of square
     * @param col - col of square
     * @return
@@ -90,8 +100,8 @@ case class Grid(numbers: List[Int]) {
       row <- 0 until GRID_SIZE
       col <- 0 until GRID_SIZE if getSquare(row, col) == 0
       mvs <- Seq(potentialMove(row, col)) if mvs.possibleValues.nonEmpty
-     } yield mvs
-  } .sortBy(mv => mv.possibleValues.length)
+    } yield mvs
+  }.sortBy(mv => mv.possibleValues.length)
     .headOption
 }
 
