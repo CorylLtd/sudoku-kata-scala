@@ -1,6 +1,6 @@
-case class Move(row: Int, col: Int, possibleValues: Vector[Int])
+case class Move(row: Int, col: Int, possibleValues: List[Int])
 
-case class Grid(numbers: Vector[Int]) {
+case class Grid(numbers: List[Int]) {
   val GRID_DIMENSION = 9
   val SQUARE_SIZE: Int = Math.sqrt(GRID_DIMENSION).toInt
 
@@ -15,7 +15,7 @@ case class Grid(numbers: Vector[Int]) {
     *
     * @param rowNumber - index of the row (0-8)
     */
-  def row(rowNumber: Int): Vector[Int] =
+  def row(rowNumber: Int): List[Int] =
     numbers.slice(rowNumber * GRID_DIMENSION, (rowNumber + 1) * GRID_DIMENSION)
 
   /**
@@ -23,13 +23,13 @@ case class Grid(numbers: Vector[Int]) {
     *
     * @param colNumber - index of the column
     */
-  def col(colNumber: Int): Vector[Int] = {
-    def colBuilder(sourceNumbers: Vector[Int], acc: Vector[Int]): Vector[Int] = {
+  def col(colNumber: Int): List[Int] = {
+    def colBuilder(sourceNumbers: List[Int], acc: List[Int]): List[Int] = {
       if (acc.length == GRID_DIMENSION) acc else
         colBuilder(sourceNumbers.drop(GRID_DIMENSION), acc :+ sourceNumbers.head)
     }
 
-    colBuilder(numbers.drop(colNumber), Vector[Int]())
+    colBuilder(numbers.drop(colNumber), List[Int]())
   }
 
   /**
@@ -38,13 +38,13 @@ case class Grid(numbers: Vector[Int]) {
     * @param row - index of the square row (0-2)
     * @param col - index of the square col (0-SQUARE_SIZE)
     */
-  def group(row: Int, col: Int): Vector[Int] = {
-    def squareBuilder(sourceNumbers: Vector[Int], acc: Vector[Int]): Vector[Int] = {
+  def group(row: Int, col: Int): List[Int] = {
+    def squareBuilder(sourceNumbers: List[Int], acc: List[Int]): List[Int] = {
       if (acc.length == GRID_DIMENSION) acc else
         squareBuilder(sourceNumbers.drop(GRID_DIMENSION), acc ++ sourceNumbers.take(SQUARE_SIZE))
     }
 
-    squareBuilder(numbers.drop((GRID_DIMENSION * SQUARE_SIZE * row) + SQUARE_SIZE * col), Vector[Int]())
+    squareBuilder(numbers.drop((GRID_DIMENSION * SQUARE_SIZE * row) + SQUARE_SIZE * col), List[Int]())
   }
 
   private def offset(row: Int, col: Int): Int = (GRID_DIMENSION * row) + col
@@ -80,7 +80,7 @@ case class Grid(numbers: Vector[Int]) {
     * @return - a move that includes all possible values
     */
   def potentialMove(row: Int, col: Int): Move =
-    Move(row, col, (1 to GRID_DIMENSION).toVector
+    Move(row, col, (1 to GRID_DIMENSION).toList
       .diff(this.row(row))
       .diff(this.col(col))
       .diff(group(row / SQUARE_SIZE, col / SQUARE_SIZE))
@@ -100,6 +100,6 @@ case class Grid(numbers: Vector[Int]) {
 }
 
 object Grid {
-  def apply(numbers: Int*): Grid = new Grid(numbers.toVector)
+  def apply(numbers: Int*): Grid = new Grid(numbers.toList)
 }
 

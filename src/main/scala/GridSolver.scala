@@ -11,13 +11,13 @@ object GridSolver {
       }
 
 
-    def solveGridList(grids: Vector[Grid]): Grid =
+    def solveGridList(grids: List[Grid]): Grid =
       if (grids.isEmpty) null else solveGrid(grids.head) match {
         case null => solveGridList(grids.tail)
         case solution => solution
       }
 
 
-    solveGridList(Vector(grid))
+    solveGridList(List(grid))
   }
 }
