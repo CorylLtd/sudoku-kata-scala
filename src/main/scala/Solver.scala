@@ -57,6 +57,9 @@ case class Grid(numbers: Vector[Int]) {
 
     squareBuilder(numbers.drop((3 * 3 * 3 * row) + 3 * col), Vector[Int]())
   }
+
+  def setSquare(row: Int, col: Int, value: Int): Grid =
+    Grid(numbers.updated((9*row) + col, value))
 }
 
 object Grid {

@@ -60,4 +60,15 @@ class GridTests extends FunSuite {
     assert(square22 === Vector(2, 8, 0, 0, 0, 5, 0, 7, 9))
   }
 
+  test("Should set a square value at 0, 0") {
+    val newGrid = testGrid.setSquare(0,0,8)
+    val row0 = newGrid.row(0)
+    assert(row0 === Vector(8, 3, 0, 0, 7, 0, 0, 0, 0))
+  }
+
+  test("Should set a square value at 8, 8") {
+    val newGrid = testGrid.setSquare(8,8,1)
+    val square22 = newGrid.square(2, 2)
+    assert(square22 === Vector(2, 8, 0, 0, 0, 5, 0, 7, 1))
+  }
 }
