@@ -89,9 +89,9 @@ case class Grid(numbers: List[Int]) {
     for {
       row <- 0 until GRID_SIZE
       col <- 0 until GRID_SIZE if getSquare(row, col) == 0
-    } yield potentialMove(row, col)
-  } .filterNot(mv => mv.possibleValues.isEmpty)
-    .sortBy(mv => mv.possibleValues.length)
+      mvs <- Seq(potentialMove(row, col)) if mvs.possibleValues.nonEmpty
+     } yield mvs
+  } .sortBy(mv => mv.possibleValues.length)
     .headOption
 }
 
